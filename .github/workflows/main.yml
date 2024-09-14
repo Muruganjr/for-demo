@@ -38,7 +38,9 @@ jobs:
 
       # Step 5: Set up SSH key for EC2
       - name: Set up SSH key
-        run: echo "${{ secrets.EC2_SSH_KEY }}" | tr -d '\r' > /tmp/id_rsa
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" | tr -d '\r' > /tmp/id_rsa
+          chmod 600 /tmp/id_rsa
         env:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
 
@@ -48,7 +50,6 @@ jobs:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ubuntu # or the appropriate user for your EC2 instance
         run: |
-          chmod 600 /tmp/id_rsa
           ssh -o StrictHostKeyChecking=no -i /tmp/id_rsa $EC2_USER@$EC2_HOST << 'EOF'
             set -e
             docker pull muruganjr/demoapp:master || { echo 'Docker pull failed'; exit 1; }
