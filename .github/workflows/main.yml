@@ -55,14 +55,6 @@ jobs:
           
           ssh -o StrictHostKeyChecking=no -i /tmp/id_rsa $EC2_USER@$EC2_HOST << 'EOF'
             set -e
-            # Check if Docker Compose is installed
-            if ! command -v docker-compose &> /dev/null; then
-              echo "Docker Compose not found. Installing..."
-              sudo curl -L "https://github.com/docker/compose/releases/download/2.17.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-              sudo chmod +x /usr/local/bin/docker-compose
-              docker-compose --version
-            fi
-
             docker pull muruganjr/demoapp:master || { echo 'Docker pull failed'; exit 1; }
             docker-compose -f /home/ubuntu/docker-compose.yml up -d || { echo 'Docker Compose failed'; exit 1; }
           EOF
